@@ -1,4 +1,4 @@
-import fs, { Stats } from 'fs';
+import fs, { stat, Stats } from 'fs';
 import path from 'path';
 
 //* ****¿La ruta existe?*****
@@ -19,6 +19,19 @@ const isAbsolute = (route) => {
 };
 //* ****Checar si es archivo o directorio*****
 const isItFile = (route) => {
+  fs.stat(route, (err, stats) => {
+    if (err){
+      console.log(`Error al obtener información de la ruta ${route}: ${err}`);
+      return;
+    }
+    if (stats.isFile()){
+      console.log(`La ruta ${route} sí corresponde a un archivo.`);
+      return true;
+    } else {
+      console.log(`La ruta ${route} no corresponde a un archivo.`);
+      return false;
+    }
+  });
 }
 //* ****Checar si hay archivos MD*****
 
@@ -37,10 +50,12 @@ const readFileApi = (route = './data/testLinks.md') => new Promise((resolve, rej
   });
 });
 
+// isItFile('./data/testLinks.md');
 //* ****Buscar URLs*****/
 
 export {
   readFileApi,
   fileExists,
   isAbsolute,
+  isItFile,
 };
