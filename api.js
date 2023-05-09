@@ -22,7 +22,15 @@ const isItFile = (route) =>  fs.lstatSync(route).isFile();
   // fs.stat(route, (err, stats) => stats.isFile()
 
 //* ****Checar si hay archivos MD*****
-
+const isMD = (route) => {
+  if (path.extname(route) === ('.md')){
+    //console.log('si es MD api');
+    return true
+  } else {
+    //console.log('NO es MD api');
+    return false
+  }
+}
 //* ****Leer un archivo*****
 const readFileApi = (route = './data/testLinks.md') => new Promise((resolve, reject) => {
   fs.readFile(route, 'utf-8', (err, data) => { // 'utf-8', después de path también sirve para cmabiar buffer a texto string
@@ -38,12 +46,19 @@ const readFileApi = (route = './data/testLinks.md') => new Promise((resolve, rej
   });
 });
 
-// isItFile('./data/testLinks.md');
 //* ****Buscar URLs*****/
+const findURLs = (text) => {
+  const dataURLs = text.match(/https:\/\/[^\s]+/g)
+  return dataURLs;
+  
+}
 
+//findURLs('./data/testLinks.md');
 export {
   readFileApi,
   fileExists,
   isAbsolute,
   isItFile,
+  isMD,
+  findURLs,
 };
