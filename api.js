@@ -3,7 +3,7 @@ import path from 'path';
 
 //* ****¿La ruta existe?*****
 // Si no existe la ruta, rechaza la promesa
-const fileExists = (route = './data/testLinks.md') => {
+const fileExists = (route) => {
   if (fs.existsSync(route)) {
     return true;
   }
@@ -17,22 +17,10 @@ const isAbsolute = (route) => {
   }
   return path.resolve(route);
 };
-//* ****Checar si es archivo o directorio*****
-const isItFile = (route) => {
-  fs.stat(route, (err, stats) => {
-    if (err){
-      console.log(`Error al obtener información de la ruta ${route}: ${err}`);
-      return;
-    }
-    if (stats.isFile()){
-      console.log(`La ruta ${route} sí corresponde a un archivo.`);
-      return true;
-    } else {
-      console.log(`La ruta ${route} no corresponde a un archivo.`);
-      return false;
-    }
-  });
-}
+//* ****Checar si es archivo*****
+const isItFile = (route) =>  fs.lstatSync(route).isFile();
+  // fs.stat(route, (err, stats) => stats.isFile()
+
 //* ****Checar si hay archivos MD*****
 
 //* ****Leer un archivo*****
@@ -45,7 +33,7 @@ const readFileApi = (route = './data/testLinks.md') => new Promise((resolve, rej
       // console.log(data)
       // console.log(data)
       // return data
-      resolve(data.toString());
+      resolve(data);
     }
   });
 });

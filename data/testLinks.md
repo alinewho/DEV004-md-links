@@ -1,5 +1,4 @@
 Hola md
-Segunda línea
 Link uno
 https://jestjs.io/es-ES/docs/getting-started#usando-babel
 Link dos
