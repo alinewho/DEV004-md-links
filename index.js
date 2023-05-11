@@ -10,11 +10,12 @@ const mdLinks = (route = './data/testLinks.md') => new Promise((resolve, reject)
       console.log(`La ruta ${routeAbs} sí corresponde a un archivo.`);
       // Si es archivo verificas que sea md (path.extname)
       if(isMD(routeAbs)){
-        console.log('si es MD index');
+        console.log('si es MD');
         // Lee el archivo
         readFileApi(routeAbs)
       .then((rpta) => {
         resolve(rpta);
+        // Busca links
         const linksRes = findURLs(rpta);
         console.log(linksRes);
       })

@@ -48,12 +48,13 @@ const readFileApi = (route = './data/testLinks.md') => new Promise((resolve, rej
 
 //* ****Buscar URLs*****/
 const findURLs = (text) => {
-  const dataURLs = text.match(/https:\/\/[^\s]+/g)
+  const dataURLs = text.match(/\[(.*?)\]\((.*?)\)/g)
   return dataURLs;
   
 }
 
-//findURLs('./data/testLinks.md');
+// findURLs('./data/testLinks.md');
+
 export {
   readFileApi,
   fileExists,
