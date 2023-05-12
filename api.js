@@ -3,7 +3,7 @@ import path from 'path';
 
 //* ****¿La ruta existe?*****
 // Si no existe la ruta, rechaza la promesa
-const fileExists = (route) => {
+const routeExists = (route) => {
   if (fs.existsSync(route)) {
     return true;
   }
@@ -57,7 +57,7 @@ const findURLs = (text) => {
 
 export {
   readFileApi,
-  fileExists,
+  routeExists,
   isAbsolute,
   isItFile,
   isMD,
