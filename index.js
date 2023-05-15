@@ -23,8 +23,12 @@ const mdLinks = (route = './data/testLinks.md') => new Promise((resolve, reject)
           .then((rpta) => {
             resolve(rpta);
             // Busca links
-            const linksRes = findURLs(rpta);
-            // console.log(linksRes);
+            const linksRes = findURLs(rpta, routeAbs);
+            if (process.argv.includes('validate') || process.argv.includes('--v')) {
+              console.log('aquí va petición HTTP');
+            } else {
+              console.log('no hubo validate', linksRes);
+            }
           })
           .catch((error) => {
             console.log(error);
@@ -42,9 +46,15 @@ const mdLinks = (route = './data/testLinks.md') => new Promise((resolve, reject)
 });
 
 mdLinks('./data/testLinks.md').then((res) => {
-  //console.log(res);
-}).catch(rej => {
+  // console.log(res);
+}).catch((rej) => {
   console.log(rej);
 });
 
 export { mdLinks };
+
+// if (process.argv.includes('validate') || process.argv.includes('--v')) {
+//   console.log(process.argv, '*****CON Validate');
+// } else {
+//   console.log(process.argv, '*****opcion invalida');
+// }

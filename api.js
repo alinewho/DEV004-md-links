@@ -31,24 +31,26 @@ const isMD = (route) => {
   return false;
 };
 //* ****Leer un archivo*****
-const readFileApi = (route = './data/testLinks.md') => new Promise((resolve, reject) => {
+const readFileApi = (route) => new Promise((resolve, reject) => {
   fs.readFile(route, 'utf-8', (err, data) => { // 'utf-8', después de path también sirve para cmabiar buffer a texto string
     if (err) {
-      // console.log(err)
       reject(err);
     } else {
-      // console.log(data)
-      // console.log(data)
-      // return data
       resolve(data);
     }
   });
 });
 
 //* ****Buscar URLs*****/
-const findURLs = (text) => {
+const findURLs = (text, route) => {
   const dataURLs = text.match(/\[(.*?)\]\((.*?)\)/g);
-  return dataURLs;
+  const finalData = [];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const data of dataURLs) {
+    finalData.push({ text: data.match(/\[(.*)\]/)[1], href: data.match(/https*?:([^"')\s]+)/)[0], file: route });
+  }
+  return finalData;
+  // return dataURLs;
 };
 
 // findURLs('./data/testLinks.md');

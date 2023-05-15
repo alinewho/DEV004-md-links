@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals';
 // import mdLinks from '../index';
 import {
-  routeExists, isAbsolute, isItFile, isMD, findURLs,
+  routeExists, isAbsolute, isItFile, isMD, findURLs, readFileApi,
 } from '../api';
 
 // describe('mdLinks', () => {
@@ -52,9 +52,23 @@ describe('isMD', () => {
     expect(isMD('./data/first.txt')).toBe(false);
   });
 });
+// readFileApi
+describe('readFileApi', () => {
+  it.only('Lee el contenido del archivo testLinks.md', () => {
+    const readReturn = `Hola md
+  [Babel](https://jestjs.io/es-ES/docs/getting-started#usando-babel)
+  [Node.js](https://overapi.com/nodejs)
+  Texto mucho texto
+  [Laboratoria](https://laboratoria-dev004-oh.youcanbook.me/service/jsps/cal.jsp?cal=3a786801-902d-47fb-8dd3-0b7db5754dbb&ini=1683228322651&team=any)`;
+    return readFileApi('./data/testLinks.md').then((data) => {
+      expect(data).toEqual(expect.any(String));
+      expect(data).toContain(readReturn);
+    });
+  });
+});
 // findURLs
 describe('findURLs', () => {
-  it('encuentra los links de los archivos', () => {
+  it('encuentra los links de mi archivo testLinks.md', () => {
     const URLreturn = [
       '[Babel](https://jestjs.io/es-ES/docs/getting-started#usando-babel)',
       '[Node.js](https://overapi.com/nodejs)',
@@ -65,6 +79,21 @@ describe('findURLs', () => {
     [Node.js](https://overapi.com/nodejs)
     Texto mucho texto
     [Laboratoria](https://laboratoria-dev004-oh.youcanbook.me/service/jsps/cal.jsp?cal=3a786801-902d-47fb-8dd3-0b7db5754dbb&ini=1683228322651&team=any) `;
+    expect(findURLs(text)).toEqual(URLreturn);
+  });
+  it('encuentra los links de mi archivo anotherMD.md', () => {
+    const URLreturn = [
+      '[Mi proyecto en Github](https://github.com/alinewho/DEV004-md-links)',
+      '[Como usar process.argv](https://www.geeksforgeeks.org/node-js-process-argv-property/)',
+      '[Comida y AI](https://www.youtube.com/watch?v=iBi1jK_jOX8&ab_channel=StephPappas)'
+    ];
+    const text = `Este es un segundo archivo de MD que contiene links válidos y nó válidos
+    [Mi proyecto en Github](https://github.com/alinewho/DEV004-md-links)
+    Segundo
+    [Como usar process.argv](https://www.geeksforgeeks.org/node-js-process-argv-property/)
+    Tercero
+    [Comida y AI](https://www.youtube.com/watch?v=iBi1jK_jOX8&ab_channel=StephPappas)
+    `;
     expect(findURLs(text)).toEqual(URLreturn);
   });
 });
