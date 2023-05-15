@@ -1,31 +1,34 @@
 // eslint-disable-next-line import/extensions
-import { readFileApi, routeExists, isAbsolute, isItFile, isMD, findURLs } from './api.js';
 import chalk from 'chalk';
+import {
+  readFileApi, routeExists, isAbsolute, isItFile, isMD, findURLs,
+// eslint-disable-next-line import/extensions
+} from './api.js';
 
 const errorChalk = chalk.bold.bgRedBright;
-const textChalk= chalk.bgCyan;
+const textChalk = chalk.bgCyan;
 
 const mdLinks = (route = './data/testLinks.md') => new Promise((resolve, reject) => {
   if (routeExists(route)) {
     // Verifica si es ruta absoluta y si no, la convierte
     const routeAbs = isAbsolute(route);
     // verificar si routeAbs es archivo (fs.stats.Isfile())
-    if(isItFile(routeAbs)) {
+    if (isItFile(routeAbs)) {
       console.log(chalk.bgMagenta(`La ruta ${routeAbs} sí corresponde a un archivo.`));
       // Si es archivo verificas que sea md (path.extname)
-      if(isMD(routeAbs)){
+      if (isMD(routeAbs)) {
         console.log(textChalk('El archivo sí es MD'));
         // Lee el archivo
         readFileApi(routeAbs)
-      .then((rpta) => {
-        resolve(rpta);
-        // Busca links
-        const linksRes = findURLs(rpta);
-        //console.log(linksRes);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+          .then((rpta) => {
+            resolve(rpta);
+            // Busca links
+            const linksRes = findURLs(rpta);
+            // console.log(linksRes);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       } else {
         console.log(errorChalk('No se encontraron archivos MD que analizar'));
       }
@@ -39,9 +42,9 @@ const mdLinks = (route = './data/testLinks.md') => new Promise((resolve, reject)
 });
 
 mdLinks('./data/testLinks.md').then((res) => {
-  // console.log(res);
+  //console.log(res);
 }).catch(rej => {
   console.log(rej);
-})
+});
 
 export { mdLinks };

@@ -18,19 +18,18 @@ const isAbsolute = (route) => {
   return path.resolve(route);
 };
 //* ****Checar si es archivo*****
-const isItFile = (route) =>  fs.lstatSync(route).isFile();
-  // fs.stat(route, (err, stats) => stats.isFile()
+const isItFile = (route) => fs.lstatSync(route).isFile();
+// fs.stat(route, (err, stats) => stats.isFile()
 
 //* ****Checar si hay archivos MD*****
 const isMD = (route) => {
-  if (path.extname(route) === ('.md')){
-    //console.log('si es MD api');
-    return true
-  } else {
-    //console.log('NO es MD api');
-    return false
+  if (path.extname(route) === ('.md')) {
+    // console.log('si es MD api');
+    return true;
   }
-}
+  // console.log('NO es MD api');
+  return false;
+};
 //* ****Leer un archivo*****
 const readFileApi = (route = './data/testLinks.md') => new Promise((resolve, reject) => {
   fs.readFile(route, 'utf-8', (err, data) => { // 'utf-8', después de path también sirve para cmabiar buffer a texto string
@@ -48,10 +47,9 @@ const readFileApi = (route = './data/testLinks.md') => new Promise((resolve, rej
 
 //* ****Buscar URLs*****/
 const findURLs = (text) => {
-  const dataURLs = text.match(/\[(.*?)\]\((.*?)\)/g)
+  const dataURLs = text.match(/\[(.*?)\]\((.*?)\)/g);
   return dataURLs;
-  
-}
+};
 
 // findURLs('./data/testLinks.md');
 
