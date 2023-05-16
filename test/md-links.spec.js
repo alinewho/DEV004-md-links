@@ -54,12 +54,13 @@ describe('isMD', () => {
 });
 // readFileApi
 describe('readFileApi', () => {
-  it.only('Lee el contenido del archivo testLinks.md', () => {
+  it('Lee el contenido del archivo testLinks.md', () => {
     const readReturn = `Hola md
-  [Babel](https://jestjs.io/es-ES/docs/getting-started#usando-babel)
-  [Node.js](https://overapi.com/nodejs)
-  Texto mucho texto
-  [Laboratoria](https://laboratoria-dev004-oh.youcanbook.me/service/jsps/cal.jsp?cal=3a786801-902d-47fb-8dd3-0b7db5754dbb&ini=1683228322651&team=any)`;
+    [Babel](https://jestjs.io/es-ES/docs/getting-started#usando-babel)
+    [Node.js](https://overapi.com/nodejs)
+    Texto mucho texto
+    [Laboratoria](https://laboratoria-dev004-oh.youcanbook.me/service/jsps/cal.jsp?cal=3a786801-902d-47fb-8dd3-0b7db5754dbb&ini=1683228322651&team=any)
+    [Un link roto](https://overapi.com/nodejsA)`;
     return readFileApi('./data/testLinks.md').then((data) => {
       expect(data).toEqual(expect.any(String));
       expect(data).toContain(readReturn);
@@ -70,22 +71,52 @@ describe('readFileApi', () => {
 describe('findURLs', () => {
   it('encuentra los links de mi archivo testLinks.md', () => {
     const URLreturn = [
-      '[Babel](https://jestjs.io/es-ES/docs/getting-started#usando-babel)',
-      '[Node.js](https://overapi.com/nodejs)',
-      '[Laboratoria](https://laboratoria-dev004-oh.youcanbook.me/service/jsps/cal.jsp?cal=3a786801-902d-47fb-8dd3-0b7db5754dbb&ini=1683228322651&team=any)',
+      {
+        text: 'Babel',
+        href: 'https://jestjs.io/es-ES/docs/getting-started#usando-babel',
+        file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/testLinks.md',
+      },
+      {
+        text: 'Node.js',
+        href: 'https://overapi.com/nodejs',
+        file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/testLinks.md',
+      },
+      {
+        text: 'Laboratoria',
+        href: 'https://laboratoria-dev004-oh.youcanbook.me/service/jsps/cal.jsp?cal=3a786801-902d-47fb-8dd3-0b7db5754dbb&ini=1683228322651&team=any',
+        file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/testLinks.md',
+      },
+      {
+        text: 'Un link roto',
+        href: 'https://overapi.com/nodejsA',
+        file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/testLinks.md',
+      },
     ];
     const text = `Hola md
     [Babel](https://jestjs.io/es-ES/docs/getting-started#usando-babel)
     [Node.js](https://overapi.com/nodejs)
     Texto mucho texto
-    [Laboratoria](https://laboratoria-dev004-oh.youcanbook.me/service/jsps/cal.jsp?cal=3a786801-902d-47fb-8dd3-0b7db5754dbb&ini=1683228322651&team=any) `;
-    expect(findURLs(text)).toEqual(URLreturn);
+    [Laboratoria](https://laboratoria-dev004-oh.youcanbook.me/service/jsps/cal.jsp?cal=3a786801-902d-47fb-8dd3-0b7db5754dbb&ini=1683228322651&team=any)
+    [Un link roto](https://overapi.com/nodejsA)`;
+    expect(findURLs(text, '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/testLinks.md')).toEqual(URLreturn);
   });
   it('encuentra los links de mi archivo anotherMD.md', () => {
     const URLreturn = [
-      '[Mi proyecto en Github](https://github.com/alinewho/DEV004-md-links)',
-      '[Como usar process.argv](https://www.geeksforgeeks.org/node-js-process-argv-property/)',
-      '[Comida y AI](https://www.youtube.com/watch?v=iBi1jK_jOX8&ab_channel=StephPappas)'
+      {
+        text: 'Mi proyecto en Github',
+        href: 'https://github.com/alinewho/DEV004-md-links',
+        file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/anotherMD.md',
+      },
+      {
+        text: 'Como usar process.argv',
+        href: 'https://www.geeksforgeeks.org/node-js-process-argv-property/',
+        file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/anotherMD.md',
+      },
+      {
+        text: 'Comida y AI',
+        href: 'https://www.youtube.com/watch?v=iBi1jK_jOX8&ab_channel=StephPappas',
+        file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/anotherMD.md',
+      },
     ];
     const text = `Este es un segundo archivo de MD que contiene links válidos y nó válidos
     [Mi proyecto en Github](https://github.com/alinewho/DEV004-md-links)
@@ -94,6 +125,6 @@ describe('findURLs', () => {
     Tercero
     [Comida y AI](https://www.youtube.com/watch?v=iBi1jK_jOX8&ab_channel=StephPappas)
     `;
-    expect(findURLs(text)).toEqual(URLreturn);
+    expect(findURLs(text, '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/anotherMD.md')).toEqual(URLreturn);
   });
 });

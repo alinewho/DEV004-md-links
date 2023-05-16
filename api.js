@@ -66,7 +66,10 @@ const validateLinks = (array) => {
   const getStatus = (url) => fetch(url);
   const readStatus = justLinks.map((url) => getStatus(url));
   const finalStatus = Promise.all(readStatus).then((answ) => {
+    // const statusArray = answ.map((res) => ({ status: res.status, statusText: res.statusText }));
+    // return statusArray;
     answ.forEach((res) => console.log('status: ', res.status, res.statusText));
+    // myStatus.push({ status: res.status }));
   });
   return finalStatus;
 };
