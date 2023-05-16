@@ -53,7 +53,27 @@ const findURLs = (text, route) => {
   // return dataURLs;
 };
 
-// findURLs('./data/testLinks.md');
+// const finalData = findURLs(textE, rutado);
+// console.log('datos', finalData);
+// const justLinks = finalData.map((obj) => obj.href);
+
+// const getStatus = (url) => fetch(url);
+
+// const readStatus = justLinks.map((url) => getStatus(url));
+
+const validateLinks = (array) => {
+  const justLinks = array.map((obj) => obj.href);
+  const getStatus = (url) => fetch(url);
+  const readStatus = justLinks.map((url) => getStatus(url));
+  const finalStatus = Promise.all(readStatus).then((answ) => {
+    answ.forEach((res) => console.log('status: ', res.status, res.statusText));
+  });
+  return finalStatus;
+};
+
+// Promise.all(readStatus).then((answ) => {
+//   answ.forEach((res) => console.log('res: ', res.status, 'text: ', res.statusText));
+// });
 
 export {
   readFileApi,
@@ -62,4 +82,5 @@ export {
   isItFile,
   isMD,
   findURLs,
+  validateLinks,
 };

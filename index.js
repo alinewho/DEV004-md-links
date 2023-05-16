@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/extensions
 import chalk from 'chalk';
 import {
-  readFileApi, routeExists, isAbsolute, isItFile, isMD, findURLs,
+  readFileApi, routeExists, isAbsolute, isItFile, isMD, findURLs, validateLinks,
 // eslint-disable-next-line import/extensions
 } from './api.js';
 
@@ -26,6 +26,7 @@ const mdLinks = (route = './data/testLinks.md') => new Promise((resolve, reject)
             const linksRes = findURLs(rpta, routeAbs);
             if (process.argv.includes('validate') || process.argv.includes('--v')) {
               console.log('aquí va petición HTTP');
+              validateLinks(linksRes);
             } else {
               console.log('no hubo validate', linksRes);
             }
@@ -52,9 +53,3 @@ mdLinks('./data/testLinks.md').then((res) => {
 });
 
 export { mdLinks };
-
-// if (process.argv.includes('validate') || process.argv.includes('--v')) {
-//   console.log(process.argv, '*****CON Validate');
-// } else {
-//   console.log(process.argv, '*****opcion invalida');
-// }
