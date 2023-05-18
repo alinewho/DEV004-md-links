@@ -65,17 +65,35 @@ const validateLinks = (array) => {
   const justLinks = array.map((obj) => obj.href);
   const getStatus = (url) => fetch(url);
   const readStatus = justLinks.map((url) => getStatus(url));
-  const finalStatus = Promise.all(readStatus).then((answ) => {
-    // const statusArray = answ.map((res) => ({ status: res.status, statusText: res.statusText }));
-    // return statusArray;
-    answ.forEach((res) => console.log('status: ', res.status, res.statusText));
-    // myStatus.push({ status: res.status }));
-  });
-  return finalStatus;
-};
 
+  return Promise.all(readStatus)
+    .then((responses) => responses.map((res, index) => {
+      const status = { status: res.status };
+      const code = { code: res.statusText };
+      const arrayIndex = array[index];
+      return { ...arrayIndex, ...status, ...code };
+    }))
+    .catch((error) => {
+      console.log('error: ', error);
+      throw error;
+    });
+};
+// console.log('status: ', res.status, res.statusText));
 // Promise.all(readStatus).then((answ) => {
 //   answ.forEach((res) => console.log('res: ', res.status, 'text: ', res.statusText));
+// });
+
+// Otra opcion
+
+// return Promise.all(readStatus)
+// .then((answ) => answ.forEach((res, index) => {
+//   const status = { status: res.status };
+//   const code = { code: res.statusText };
+//   const arrayIndex = array[index];
+//   return { ...arrayIndex, ...status, ...code };
+// }))
+// .catch((error) => {
+//   console.log('error: ', error);
 // });
 
 export {

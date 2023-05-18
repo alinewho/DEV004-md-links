@@ -54,14 +54,14 @@ describe('isMD', () => {
 });
 // readFileApi
 describe('readFileApi', () => {
-  it('Lee el contenido del archivo testLinks.md', () => {
-    const readReturn = `Hola md
-    [Babel](https://jestjs.io/es-ES/docs/getting-started#usando-babel)
-    [Node.js](https://overapi.com/nodejs)
-    Texto mucho texto
-    [Laboratoria](https://laboratoria-dev004-oh.youcanbook.me/service/jsps/cal.jsp?cal=3a786801-902d-47fb-8dd3-0b7db5754dbb&ini=1683228322651&team=any)
-    [Un link roto](https://overapi.com/nodejsA)`;
-    return readFileApi('./data/testLinks.md').then((data) => {
+  it('Lee el contenido del archivo anotherMD.md', () => {
+    const readReturn = `Este es un segundo archivo de MD que contiene links válidos y nó válidos
+    [Mi proyecto en Github](https://github.com/alinewho/DEV004-md-links)
+    Segundo
+    [Como usar process.argv](https://www.geeksforgeeks.org/node-js-process-argv-property/)
+    Tercero
+    [Comida y AI](https://www.youtube.com/watch?v=iBi1jK_jOX8&ab_channel=StephPappas)`;
+    return readFileApi('./data/anotherMD.md').then((data) => {
       expect(data).toEqual(expect.any(String));
       expect(data).toContain(readReturn);
     });
