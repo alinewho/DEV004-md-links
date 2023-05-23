@@ -6,30 +6,69 @@ import {
 } from './api.js';
 
 const errorChalk = chalk.bold.bgRedBright;
-const textChalk = chalk.bgCyan;
+const textChalk = chalk.cyan;
+const totalStat = chalk.bold.bgGreen;
+const uniqueStat = chalk.bgMagenta;
+const brokenStat = chalk.bgBlue;
 
-const mdLinks = (route = './data/testLinks.md') => new Promise((resolve, reject) => {
+const findUnique = (data) => {
+  const myUniqueSet = new Set();
+  // eslint-disable-next-line no-restricted-syntax
+  for (const datae of data) {
+    myUniqueSet.add(datae.href);
+  }
+  const uniqueFinds = [...myUniqueSet];
+  const uniqueLength = uniqueFinds.length;
+  console.log(uniqueStat('Unique: ', uniqueLength));
+};
+
+const mdLinks = (route, options) => new Promise((resolve, reject) => {
   if (routeExists(route)) {
     // Verifica si es ruta absoluta y si no, la convierte
     const routeAbs = isAbsolute(route);
     // verificar si routeAbs es archivo (fs.stats.Isfile())
     if (isItFile(routeAbs)) {
-      console.log(chalk.bgMagenta(`La ruta ${routeAbs} sí corresponde a un archivo.`));
+      console.log(chalk.yellow(`La ruta ${routeAbs} sí corresponde a un archivo.`));
       // Si es archivo verificas que sea md (path.extname)
       if (isMD(routeAbs)) {
-        console.log(textChalk('El archivo sí es MD'));
+        console.log(textChalk('El archivo sí es MD, leyendo...'));
         // Lee el archivo
         readFileApi(routeAbs)
           .then((rpta) => {
-            resolve(rpta);
             // Busca links
             const linksRes = findURLs(rpta, routeAbs);
-            if (process.argv.includes('validate') || process.argv.includes('--v')) {
-              console.log('aquí va petición HTTP');
-              (validateLinks(linksRes)
+            if (process.argv.includes('--stats') && (process.argv.includes('--validate'))) {
+              validateLinks(linksRes)
                 .then((data) => {
-                  console.log(data);
-                }));
+                  console.log('stats y validate');
+                  const numLinks = data.length;
+                  console.log(totalStat('Total: ', numLinks));
+                  findUnique(data);
+                  const brokenFinds = data.filter((eachObj) => {
+                    const broken = eachObj.status !== 200;
+                    return broken;
+                  });
+                  const brokenLength = brokenFinds.length;
+                  console.log(brokenStat('Broken: ', brokenLength));
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            } else if (process.argv.includes('--validate') || process.argv.includes('--v')) {
+              validateLinks(linksRes)
+                .then((data) => {
+                  console.log('array de validaciones', data);
+                });
+            } else if (process.argv.includes('--stats')) {
+              validateLinks(linksRes)
+                .then((data) => {
+                  const numLinks = data.length;
+                  console.log(totalStat('Total: ', numLinks));
+                  findUnique(data);
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
             } else {
               console.log('no hubo validate', linksRes);
             }
@@ -49,8 +88,9 @@ const mdLinks = (route = './data/testLinks.md') => new Promise((resolve, reject)
   }
 });
 
-mdLinks('./data/testLinks.md').then((res) => {
-  // console.log(res);
+const route = process.argv[2];
+mdLinks(route).then((res) => {
+  console.log(res);
 }).catch((rej) => {
   console.log(rej);
 });
