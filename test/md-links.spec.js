@@ -1,5 +1,9 @@
-import { describe, expect, it } from '@jest/globals';
+import {
+  beforeEach,
+  describe, expect, it, jest,
+} from '@jest/globals';
 // import mdLinks from '../index';
+import fs from 'fs';
 import {
   routeExists, isAbsolute, isItFile, isMD, findURLs, readFileApi, validateLinks,
 } from '../api';
@@ -11,9 +15,6 @@ import {
 // });
 // routeExists
 describe('routeExists', () => {
-  // it('debería ser una función', () => {
-  //   expect(typeof routeExists).toBe("function");
-  // });
   it('debería devolver true si la ruta existe', () => {
     expect(routeExists('./data/testLinks.md')).toBe(true);
   });
@@ -54,17 +55,23 @@ describe('isMD', () => {
 });
 // readFileApi
 describe('readFileApi', () => {
-  it('Lee el contenido del archivo anotherMD.md', () => {
-    const readReturn = `Hola md
+  it('debe resolver con los datos del archivo anotherMD.md si la lectura es exitosa', (done) => {
+    const mockData = `Hola md
     [Babel](https://jestjs.io/es-ES/docs/getting-started#usando-babel)
     [Node.js](https://overapi.com/nodejs)
     Texto mucho texto
     [Laboratoria](https://laboratoria-dev004-oh.youcanbook.me/service/jsps/cal.jsp?cal=3a786801-902d-47fb-8dd3-0b7db5754dbb&ini=1683228322651&team=any)
     [Un link roto](https://overapi.com/nodejsA)`;
-    return readFileApi('./data/testLinks.md').then((data) => {
-      expect(data).toEqual(expect.any(String));
-      expect(data).toContain(readReturn);
+    jest.spyOn(fs, 'readFile').mockImplementation((route, encoding, callback) => {
+      callback(null, mockData);
     });
+    readFileApi('./data/testLinks.md')
+      .then((data) => {
+        expect(data).toBe(mockData);
+        expect(fs.readFile).toHaveBeenCalledWith('./data/testLinks.md', 'utf-8', expect.any(Function));
+        done();
+      })
+      .catch(done);
   });
 });
 // findURLs
@@ -128,63 +135,70 @@ describe('findURLs', () => {
     expect(findURLs(text, '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/anotherMD.md')).toEqual(URLreturn);
   });
 });
-describe('validateLinks', () => {
-  it('valida el array de objetos de los objetos de links encontrados (text, href, file) y devuelve un objeto añadiendo las propiedades status y code', () => {
-    const objectArrays = [
-      {
-        text: 'Babel',
-        href: 'https://jestjs.io/es-ES/docs/getting-started#usando-babel',
-        file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/testLinks.md'
-      },
-      {
-        text: 'Node.js',
-        href: 'https://overapi.com/nodejs',
-        file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/testLinks.md'
-      },
-      {
-        text: 'Laboratoria',
-        href: 'https://laboratoria-dev004-oh.youcanbook.me/service/jsps/cal.jsp?cal=3a786801-902d-47fb-8dd3-0b7db5754dbb&ini=1683228322651&team=any',
-        file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/testLinks.md'
-      },
-      {
-        text: 'Un link roto',
-        href: 'https://overapi.com/nodejsA',
-        file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/testLinks.md'
-      },
-    ];
-    const alreadyValidated = [
-      {
-        text: 'Babel',
-        href: 'https://jestjs.io/es-ES/docs/getting-started#usando-babel',
-        file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/testLinks.md',
-        status: 200,
-        code: 'OK',
-      },
-      {
-        text: 'Node.js',
-        href: 'https://overapi.com/nodejs',
-        file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/testLinks.md',
-        status: 200,
-        code: 'OK',
-      },
-      {
-        text: 'Laboratoria',
-        href: 'https://laboratoria-dev004-oh.youcanbook.me/service/jsps/cal.jsp?cal=3a786801-902d-47fb-8dd3-0b7db5754dbb&ini=1683228322651&team=any',
-        file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/testLinks.md',
-        status: 200,
-        code: 'OK',
-      },
-      {
-        text: 'Un link roto',
-        href: 'https://overapi.com/nodejsA',
-        file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/testLinks.md',
-        status: 404,
-        code: 'Not Found',
-      },
-    ];
-    return validateLinks(objectArrays)
-      .then((data) => {
-        expect(data).toEqual(alreadyValidated);
-      });
+// Validate links
+describe('validateLinks llama a fetch las veces que se requiere', () => {
+  const objectArrays = [
+    {
+      text: 'Babel',
+      href: 'https://jestjs.io/es-ES/docs/getting-started#usando-babel',
+      file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/testLinks.md',
+    },
+    {
+      text: 'Node.js',
+      href: 'https://overapi.com/nodejs',
+      file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/testLinks.md',
+    },
+    {
+      text: 'Laboratoria',
+      href: 'https://laboratoria-dev004-oh.youcanbook.me/service/jsps/cal.jsp?cal=3a786801-902d-47fb-8dd3-0b7db5754dbb&ini=1683228322651&team=any',
+      file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/testLinks.md',
+    },
+    {
+      text: 'Un link roto',
+      href: 'https://overapi.com/nodejsA',
+      file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/testLinks.md',
+    },
+  ];
+  const alreadyValidated = [
+    {
+      text: 'Babel',
+      href: 'https://jestjs.io/es-ES/docs/getting-started#usando-babel',
+      file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/testLinks.md',
+      status: 200,
+      code: 'OK',
+    },
+    {
+      text: 'Node.js',
+      href: 'https://overapi.com/nodejs',
+      file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/testLinks.md',
+      status: 200,
+      code: 'OK',
+    },
+    {
+      text: 'Laboratoria',
+      href: 'https://laboratoria-dev004-oh.youcanbook.me/service/jsps/cal.jsp?cal=3a786801-902d-47fb-8dd3-0b7db5754dbb&ini=1683228322651&team=any',
+      file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/testLinks.md',
+      status: 200,
+      code: 'OK',
+    },
+    {
+      text: 'Un link roto',
+      href: 'https://overapi.com/nodejsA',
+      file: '/Users/aline_who/Documents/Laboratoria/DEV004-md-links/data/testLinks.md',
+      status: 404,
+      code: 'Not Found',
+    },
+  ];
+  global.fetch = jest.fn(() => Promise.resolve({
+    json: () => Promise.resolve({ alreadyValidated }),
+  }));
+
+  beforeEach(() => {
+    fetch.mockClear();
+  });
+
+  it('finds exchange', async () => {
+    await validateLinks(objectArrays);
+    expect(fetch).toHaveBeenCalledTimes(4);
   });
 });

@@ -10,7 +10,7 @@ const textChalk = chalk.cyan;
 const totalStat = chalk.bold.bgGreen;
 const uniqueStat = chalk.bgMagenta;
 const brokenStat = chalk.bgBlue;
-
+// ** encuentra enlaces únicos
 const findUnique = (data) => {
   const myUniqueSet = new Set();
   // eslint-disable-next-line no-restricted-syntax
@@ -22,7 +22,7 @@ const findUnique = (data) => {
   console.log(uniqueStat('Unique: ', uniqueLength));
 };
 
-const mdLinks = (route, options) => new Promise((resolve, reject) => {
+const mdLinks = (route) => new Promise((resolve, reject) => {
   if (routeExists(route)) {
     // Verifica si es ruta absoluta y si no, la convierte
     const routeAbs = isAbsolute(route);
