@@ -5,11 +5,12 @@ import {
 // eslint-disable-next-line import/extensions
 } from './api.js';
 // eslint-disable-next-line import/extensions
-import { findUnique, areUBroken } from './cli.js';
+import { findUnique } from './cli.js';
 
 const errorChalk = chalk.bold.bgRedBright;
 const textChalk = chalk.cyan;
 const totalStat = chalk.bold.bgGreen;
+const brokenStat = chalk.bgBlue;
 
 const mdLinks = (route) => new Promise((resolve, reject) => {
   if (routeExists(route)) {
@@ -33,7 +34,12 @@ const mdLinks = (route) => new Promise((resolve, reject) => {
                   const numLinks = data.length;
                   console.log(totalStat('Total: ', numLinks));
                   findUnique(data);
-                  areUBroken(data);
+                  const brokenFinds = data.filter((eachObj) => {
+                    const broken = eachObj.status !== 200;
+                    return broken;
+                  });
+                  const brokenLength = brokenFinds.length;
+                  console.log(brokenStat('Broken: ', brokenLength));
                 })
                 .catch((err) => {
                   console.log(err);

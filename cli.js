@@ -1,7 +1,6 @@
 import chalk from 'chalk';
 
 const uniqueStat = chalk.bgMagenta;
-const brokenStat = chalk.bgBlue;
 // ** encuentra enlaces únicos
 const findUnique = (data) => {
   const myUniqueSet = new Set();
@@ -14,16 +13,5 @@ const findUnique = (data) => {
   console.log(uniqueStat('Unique: ', uniqueLength));
 };
 // *encuentra enlaces rotos
-const areUBroken = (data) => {
-  const brokenFinds = data.filter((eachObj) => {
-    const broken = eachObj.status !== 200;
-    const brokenLength = broken.length;
-    return brokenLength;
-  });
-  console.log(brokenStat('Broken: ', areUBroken));
-};
 
-export {
-  findUnique,
-  areUBroken,
-};
+export { findUnique };
