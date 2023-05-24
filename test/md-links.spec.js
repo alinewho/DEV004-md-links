@@ -136,7 +136,7 @@ describe('findURLs', () => {
   });
 });
 // Validate links
-describe('validateLinks llama a fetch las veces que se requiere', () => {
+describe('validateLinks', () => {
   const objectArrays = [
     {
       text: 'Babel',
@@ -197,8 +197,10 @@ describe('validateLinks llama a fetch las veces que se requiere', () => {
     fetch.mockClear();
   });
 
-  it('finds exchange', async () => {
+  it('llama a fetch las veces que se requiere', async () => {
     await validateLinks(objectArrays);
     expect(fetch).toHaveBeenCalledTimes(4);
   });
 });
+
+// mdLinks

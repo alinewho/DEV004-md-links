@@ -4,23 +4,12 @@ import {
   readFileApi, routeExists, isAbsolute, isItFile, isMD, findURLs, validateLinks,
 // eslint-disable-next-line import/extensions
 } from './api.js';
+// eslint-disable-next-line import/extensions
+import { findUnique, areUBroken } from './cli.js';
 
 const errorChalk = chalk.bold.bgRedBright;
 const textChalk = chalk.cyan;
 const totalStat = chalk.bold.bgGreen;
-const uniqueStat = chalk.bgMagenta;
-const brokenStat = chalk.bgBlue;
-// ** encuentra enlaces únicos
-const findUnique = (data) => {
-  const myUniqueSet = new Set();
-  // eslint-disable-next-line no-restricted-syntax
-  for (const datae of data) {
-    myUniqueSet.add(datae.href);
-  }
-  const uniqueFinds = [...myUniqueSet];
-  const uniqueLength = uniqueFinds.length;
-  console.log(uniqueStat('Unique: ', uniqueLength));
-};
 
 const mdLinks = (route) => new Promise((resolve, reject) => {
   if (routeExists(route)) {
@@ -44,12 +33,7 @@ const mdLinks = (route) => new Promise((resolve, reject) => {
                   const numLinks = data.length;
                   console.log(totalStat('Total: ', numLinks));
                   findUnique(data);
-                  const brokenFinds = data.filter((eachObj) => {
-                    const broken = eachObj.status !== 200;
-                    return broken;
-                  });
-                  const brokenLength = brokenFinds.length;
-                  console.log(brokenStat('Broken: ', brokenLength));
+                  areUBroken(data);
                 })
                 .catch((err) => {
                   console.log(err);

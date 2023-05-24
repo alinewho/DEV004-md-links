@@ -1,27 +1,29 @@
-import { mdLinks } from './index.js';
+import chalk from 'chalk';
 
-const readingFile = process.argv[2];
-console.log('process', process.argv[2]);
+const uniqueStat = chalk.bgMagenta;
+const brokenStat = chalk.bgBlue;
+// ** encuentra enlaces únicos
+const findUnique = (data) => {
+  const myUniqueSet = new Set();
+  // eslint-disable-next-line no-restricted-syntax
+  for (const datae of data) {
+    myUniqueSet.add(datae.href);
+  }
+  const uniqueFinds = [...myUniqueSet];
+  const uniqueLength = uniqueFinds.length;
+  console.log(uniqueStat('Unique: ', uniqueLength));
+};
+// *encuentra enlaces rotos
+const areUBroken = (data) => {
+  const brokenFinds = data.filter((eachObj) => {
+    const broken = eachObj.status !== 200;
+    const brokenLength = broken.length;
+    return brokenLength;
+  });
+  console.log(brokenStat('Broken: ', areUBroken));
+};
 
-if (process.argv.includes('--validate')) {
-  // console.log('opcion v');
-  mdLinks(readingFile)
-    .then((res) => {
-      console.log('esta es la respuesta de validate', res);
-    })
-    .catch((rej) => {
-      console.log(rej);
-    });
-} else if (process.argv.includes('--stats')) {
-  console.log('stats');
-  mdLinks(readingFile)
-    .then((res) => {
-      const totalN = res.length;
-      console.log('num de links', totalN);
-    })
-    .catch((rej) => {
-      console.log(rej);
-    });
-} else {
-  mdLinks(readingFile);
-}
+export {
+  findUnique,
+  areUBroken,
+};
